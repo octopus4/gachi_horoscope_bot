@@ -6,7 +6,5 @@ googledrivedownloader
 json5
 jsonschema
 numpy
-numpy-base
-numpydoc
 python-telegram-bot
 torch
