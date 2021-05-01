@@ -19,9 +19,8 @@ class Loader:
 
     def load(self):
         if not os.path.exists(self.path):
-            gachi_horoscope_scripted_model = SCRIPTED_LM_ID
-            gdd.download_file_from_google_drive(file_id=gachi_horoscope_scripted_model, dest_path=self.path)
-        model = torch.jit.load('scripted_lm.pt').eval()
+            gdd.download_file_from_google_drive(file_id=SCRIPTED_LM_ID, dest_path=self.path)
+        model = torch.jit.load(self.path).eval()
         sampler = Sampler(model, self.device)
 
         return model, sampler
