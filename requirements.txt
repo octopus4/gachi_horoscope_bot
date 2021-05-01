@@ -7,17 +7,10 @@ asn1crypto
 astroid
 astropy
 astunparse
-atari-py
 atomicwrites
 attrs
 babel
 backcall
-backports
-backports.functools_lru_cache
-backports.os
-backports.shutil_get_terminal_size
-backports.tempfile
-backports.weakref
 beautifulsoup4
 bitarray
 bkcharts
@@ -25,9 +18,6 @@ blas
 bleach
 blosc
 bokeh
-boto
-boto3
-botocore
 bottleneck
 bzip2
 ca-certificates
