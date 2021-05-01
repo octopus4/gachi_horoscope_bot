@@ -52,6 +52,9 @@ class Sampler:
         continuation = self.__sample__(192, seed, 0.4)
         return seed + continuation
 
+    def __is_eos__(self, input_encoded):
+        return input_encoded[0] == self.__vocab.char2idx[Vocab.END_TOKEN]
+
     def __sample__(self, max_len=128, seed="", temperature=1.0):
         vocab = self.__vocab
         input_encoded = []
@@ -61,13 +64,14 @@ class Sampler:
         result = ''
         hidden = self.__model.init_hidden(1).to(self.__device)
         input_var = Variable(torch.LongTensor([input_encoded]))
-
         with torch.no_grad():
-            while input_encoded[0] != vocab.char2idx['<eos>']:
+            while not self.__is_eos__(input_encoded):
                 output, hidden = self.__model(input_var.to(self.__device), hidden, temperature)
                 a = output.cpu().data[0, -1, :].numpy()
                 p = np.exp(a) / np.exp(a).sum()
                 input_encoded = [np.random.choice(len(vocab), p=p)]
+                if self.__is_eos__(input_encoded):
+                    break
                 result += vocab.idx2char[input_encoded[0]]
                 if len(result) > max_len:
                     break
