@@ -5,12 +5,15 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandle
 from loader import Loader
 
 token = os.getenv('TELEGRAM_TOKEN')
+print('retrieved token from env successfully' if token is not None else 'failed to retrieve token')
 loader = Loader()
 model, sampler = loader.load()
+print('loaded model and sampler instances successfully')
 updater = Updater(token)
 
 
 def start(update: Update, callback_context: CallbackContext) -> None:
+    print('receiving start command')
     keyboard = [
         # fire
         [
@@ -42,6 +45,7 @@ def start(update: Update, callback_context: CallbackContext) -> None:
 
 
 def handle_action(update: Update, callback_context: CallbackContext) -> None:
+    print('handling bot action')
     user_input = update.message.text
     sign = user_input[2:]
     response = sampler.sample_by_sign(sign)
@@ -49,6 +53,7 @@ def handle_action(update: Update, callback_context: CallbackContext) -> None:
 
 
 def main():
+    print('started bot successfully')
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(MessageHandler(Filters.text, handle_action))
