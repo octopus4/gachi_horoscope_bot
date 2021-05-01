@@ -7,4 +7,5 @@ json5
 jsonschema
 numpy
 python-telegram-bot
+requests
 https://download.pytorch.org/whl/cpu/torch-1.8.1%2Bcpu-cp39-cp39-linux_x86_64.whl
