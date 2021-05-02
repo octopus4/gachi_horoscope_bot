@@ -8,6 +8,7 @@ from torch.autograd import Variable
 from model import LanguageModel
 from vocab import Vocab
 
+DEFAULT_MIN_LEN = '16'
 DEFAULT_MAX_LEN = '256'
 DEFAULT_TEMPERATURE = '0.5'
 MONTHS = [
@@ -38,7 +39,6 @@ SIGNS = {
     "Скорпион",
     "Рыбы"
 }
-MIN_LEN = 32
 
 
 def getenv_or_default(env, default):
@@ -51,6 +51,7 @@ class Sampler:
         self.__model = model
         self.__device = device
         self.__vocab = Vocab.restore()
+        self.__min_len = int(getenv_or_default('MIN_LEN', DEFAULT_MIN_LEN))
         self.__desired_len = int(getenv_or_default('MAX_LEN', DEFAULT_MAX_LEN))
         self.__temperature = float(getenv_or_default('TEMPERATURE', DEFAULT_TEMPERATURE))
 
@@ -60,10 +61,11 @@ class Sampler:
         today = datetime.datetime.now()
         d, m = today.day, MONTHS[today.month - 1]
         seed = f"{sign}, {d} {m}: "
+        min_len = self.__min_len
         desired_len = self.__desired_len
         temperature = self.__temperature
         continuation = self.__sample__(desired_len, seed, temperature)
-        while len(continuation) < MIN_LEN:
+        while len(continuation) < min_len:
             continuation = self.__sample__(desired_len, seed, temperature)
         return seed + continuation
 
