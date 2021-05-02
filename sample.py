@@ -38,6 +38,7 @@ SIGNS = {
     "Скорпион",
     "Рыбы"
 }
+MIN_LEN = 32
 
 
 def getenv_or_default(env, default):
@@ -62,6 +63,8 @@ class Sampler:
         desired_len = self.__desired_len
         temperature = self.__temperature
         continuation = self.__sample__(desired_len, seed, temperature)
+        while len(continuation) < MIN_LEN:
+            continuation = self.__sample__(desired_len, seed, temperature)
         return seed + continuation
 
     def __is_eos__(self, input_encoded):
