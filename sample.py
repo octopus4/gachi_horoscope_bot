@@ -1,4 +1,6 @@
 import datetime
+import os
+
 import numpy as np
 import torch
 
@@ -6,7 +8,9 @@ from torch.autograd import Variable
 from model import LanguageModel
 from vocab import Vocab
 
-months = [
+DEFAULT_MAX_LEN = '256'
+DEFAULT_TEMPERATURE = '0.5'
+MONTHS = [
     'января',
     'февраля',
     'марта',
@@ -20,8 +24,7 @@ months = [
     'ноября',
     'декабря',
 ]
-
-signs = {
+SIGNS = {
     "Овен",
     "Лев",
     "Стрелец",
@@ -37,19 +40,28 @@ signs = {
 }
 
 
+def getenv_or_default(env, default):
+    env_value = os.getenv(env)
+    return env_value if env_value is not None else default
+
+
 class Sampler:
     def __init__(self, model: LanguageModel, device: torch.cuda.Device):
         self.__model = model
         self.__device = device
         self.__vocab = Vocab.restore()
+        self.__desired_len = int(getenv_or_default('MAX_LEN', DEFAULT_MAX_LEN))
+        self.__temperature = float(getenv_or_default('TEMPERATURE', DEFAULT_TEMPERATURE))
 
     def sample_by_sign(self, sign):
-        if sign not in signs:
+        if sign not in SIGNS:
             return ''
         today = datetime.datetime.now()
-        d, m = today.day, months[today.month - 1]
+        d, m = today.day, MONTHS[today.month - 1]
         seed = f"{sign}, {d} {m}: "
-        continuation = self.__sample__(192, seed, 0.4)
+        desired_len = self.__desired_len
+        temperature = self.__temperature
+        continuation = self.__sample__(desired_len, seed, temperature)
         return seed + continuation
 
     def __is_eos__(self, input_encoded):
