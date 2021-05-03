@@ -14,7 +14,7 @@ updater = Updater(token)
 
 def start(update: Update, callback_context: CallbackContext) -> None:
     user = update.message.from_user
-    print(f'receiving start command from {user.first_name + user.last_name}')
+    print(f'receiving start command from {user.username}')
     keyboard = [
         # fire
         [
@@ -47,7 +47,7 @@ def start(update: Update, callback_context: CallbackContext) -> None:
 
 def handle_action(update: Update, callback_context: CallbackContext) -> None:
     user = update.message.from_user
-    print(f'handling bot action from {user.first_name + user.last_name}')
+    print(f'handling bot action from {user.username}')
     user_input = update.message.text
     sign = user_input[2:]
     response = sampler.sample_by_sign(sign)
