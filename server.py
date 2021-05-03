@@ -13,7 +13,8 @@ updater = Updater(token)
 
 
 def start(update: Update, callback_context: CallbackContext) -> None:
-    print('receiving start command')
+    contact = update.message.contact
+    print(f'receiving start command from {contact.first_name + contact.last_name}')
     keyboard = [
         # fire
         [
@@ -45,7 +46,8 @@ def start(update: Update, callback_context: CallbackContext) -> None:
 
 
 def handle_action(update: Update, callback_context: CallbackContext) -> None:
-    print('handling bot action')
+    contact = update.message.contact
+    print(f'handling bot action from {contact.first_name + contact.last_name}')
     user_input = update.message.text
     sign = user_input[2:]
     response = sampler.sample_by_sign(sign)
