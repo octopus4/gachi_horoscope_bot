@@ -8,6 +8,7 @@ from torch.autograd import Variable
 from model import LanguageModel
 from vocab import Vocab
 
+DEFAULT_RESPONSE = 'Fuck you, leatherman!'
 DEFAULT_MIN_LEN = '16'
 DEFAULT_MAX_LEN = '256'
 DEFAULT_TEMPERATURE = '0.5'
@@ -54,10 +55,11 @@ class Sampler:
         self.__min_len = int(getenv_or_default('MIN_LEN', DEFAULT_MIN_LEN))
         self.__desired_len = int(getenv_or_default('MAX_LEN', DEFAULT_MAX_LEN))
         self.__temperature = float(getenv_or_default('TEMPERATURE', DEFAULT_TEMPERATURE))
+        self.__default_response = getenv_or_default('DEFAULT_RESPONSE', DEFAULT_RESPONSE)
 
     def sample_by_sign(self, sign):
         if sign not in SIGNS:
-            return ''
+            return self.__default_response
         today = datetime.datetime.now()
         d, m = today.day, MONTHS[today.month - 1]
         seed = f"{sign}, {d} {m}: "
